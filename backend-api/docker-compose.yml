@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+
+  app:
+    build: .
+    entrypoint: ./.docker/entrypoint.sh
+    container_name: esquenta-4-app
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/home/node/app
+
+  db:
+    build: ./.docker/mysql
+    container_name: esquenta-4-db
+    restart: always
+    tty: true
+    ports:
+      - "33006:3306"
+    volumes:
+      - ./.docker/dbdata:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=esquenta
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=root

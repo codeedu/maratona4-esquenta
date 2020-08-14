@@ -1,0 +1,35 @@
+POST http://localhost:3000/users
+Content-type: application/json
+
+{
+    "name": "Luiz Carlos",
+    "email": "argentinaluiz@gmail.com"
+}
+
+###
+
+GET http://localhost:3000/users
+
+###
+GET http://localhost:3000/users/1
+
+###
+PUT http://localhost:3000/users/1
+Content-type: application/json
+
+{
+    "name": "Luiz Carlos - teste44444",
+    "email": "argentinaluiz1@gmail.com"
+}
+
+###
+DELETE http://localhost:3000/users/1
+
+###
+POST http://localhost:3000/users
+Content-type: application/json
+
+{
+    "name": "adfadsf",
+    "email": "teste@teste.com"
+}
