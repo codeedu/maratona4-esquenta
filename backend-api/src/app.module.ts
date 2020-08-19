@@ -4,7 +4,10 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './models/user.model';
 import { ConfigModule } from '@nestjs/config';
-import { UserController } from './user/user.controller';
+import { UserController } from './controllers/user/user.controller';
+import { RoomController } from './controllers/room/room.controller';
+import { Room } from './models/room.model';
+import { WebsocketService } from './websocket/websocket.service';
 
 @Module({
   imports: [
@@ -17,11 +20,11 @@ import { UserController } from './user/user.controller';
       username: process.env.TYPEORM_USERNAME,
       password: process.env.TYPEORM_PASSWORD,
       database: process.env.TYPEORM_DATABASE,
-      entities: [User],
+      entities: [User, Room],
     }),
-    TypeOrmModule.forFeature([User])
+    TypeOrmModule.forFeature([User, Room])
   ],
-  controllers: [AppController, UserController],
-  providers: [AppService],
+  controllers: [AppController, UserController, RoomController],
+  providers: [AppService, WebsocketService],
 })
 export class AppModule {}

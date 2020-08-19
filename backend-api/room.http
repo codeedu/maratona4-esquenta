@@ -1,0 +1,13 @@
+POST http://localhost:3000/rooms
+Content-type: application/json
+
+{
+    "name": "Sala 2"
+}
+
+###
+
+GET http://localhost:3000/rooms
+
+###
+GET http://localhost:3000/rooms/1
