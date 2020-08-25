@@ -2,8 +2,10 @@
 import React, { useState, useEffect, useRef, MutableRefObject } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
+import { useKeycloak } from "@react-keycloak/web";
+import { hostname } from "os";
 type Props = {};
-//fsc function stateless component
+
 interface RoomModel {
   id: string;
   name: string;
@@ -11,6 +13,8 @@ interface RoomModel {
 //ky
 let countRender = 0;
 export const Room = (props: Props) => {
+  const { keycloak } = useKeycloak();
+
   const [rooms, setRooms] = useState<RoomModel[]>([]);
   const inputRef = useRef() as MutableRefObject<any>;
   const history = useHistory();
@@ -21,9 +25,17 @@ export const Room = (props: Props) => {
     //   const response = await axios.get("http://localhost:3000/rooms");
     //   setRooms(response.data);
     // })();
-    axios.get("http://localhost:3000/rooms").then((response) => {
-      setRooms(response.data);
-    });
+    //interceptors
+    //axiosInst.intercetpros.request.use((config) => config.headers return config)
+    axios
+      .get("http://localhost:3000/rooms", {
+        headers: {
+          Authorization: `Bearer ${keycloak?.token}`,
+        },
+      })
+      .then((response) => {
+        setRooms(response.data);
+      });
     return () => {
       //destruir coisas aqui
     };
@@ -33,7 +45,7 @@ export const Room = (props: Props) => {
     const name = inputRef.current.value;
     history.push(`/chat?room_id=${roomId}&name=${name}`);
     //console.log(roomId, inputRef.current.value);
-  };
+  }
 
   return (
     <div>
@@ -44,7 +56,9 @@ export const Room = (props: Props) => {
       </p>
       <ul>
         {rooms.map((room, key) => (
-          <li key={key} onClick={() => toChat(room.id)}>{room.name}</li>
+          <li key={key} onClick={() => toChat(room.id)}>
+            {room.name}
+          </li>
         ))}
       </ul>
     </div>

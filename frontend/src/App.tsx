@@ -1,18 +1,13 @@
-import React from 'react';
-import { Room } from './components/Room';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import { Chat } from './components/Chat';
-
-
+import React from "react";
+import { KeycloakProvider } from "@react-keycloak/web";
+import { keycloak, keycloakProviderInitConfig } from "./utils/auth";
+import { AppRouter } from "./AppRouter";
 //JSX
 function App() {
   return (
-    <BrowserRouter>
-      <Switch>
-        <Route path="/" component={Room} exact={true}></Route>
-        <Route path="/chat" component={Chat} exact={true}></Route>
-      </Switch>
-    </BrowserRouter>
+    <KeycloakProvider keycloak={keycloak} initConfig={keycloakProviderInitConfig} >
+      <AppRouter/>
+    </KeycloakProvider>
   );
 }
 

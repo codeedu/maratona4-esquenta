@@ -21,6 +21,7 @@ import {
   ApiNoContentResponse,
 } from '@nestjs/swagger';
 import { RoomResponse } from 'src/api-doc/room.response';
+import { Public } from 'nestjs-keycloak-admin';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('rooms')
@@ -30,6 +31,7 @@ export class RoomController {
     private roomRepo: Repository<Room>,
   ) {}
 
+//  @Public()
   @ApiOkResponse({ type: RoomResponse })
   @Get()
   async index(): Promise<Room[]> {

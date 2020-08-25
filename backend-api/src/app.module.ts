@@ -8,7 +8,8 @@ import { UserController } from './controllers/user/user.controller';
 import { RoomController } from './controllers/room/room.controller';
 import { Room } from './models/room.model';
 import { WebsocketService } from './websocket/websocket.service';
-
+import KeycloakModule, { AuthGuard } from 'nestjs-keycloak-admin';
+import { APP_GUARD } from '@nestjs/core';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -22,9 +23,20 @@ import { WebsocketService } from './websocket/websocket.service';
       database: process.env.TYPEORM_DATABASE,
       entities: [User, Room],
     }),
-    TypeOrmModule.forFeature([User, Room])
+    TypeOrmModule.forFeature([User, Room]),
+    KeycloakModule.registerAsync({
+      useFactory: () => {
+        const keycloakConfig = JSON.parse(process.env.KEYCLOAK_JSON);
+        return {
+          baseUrl: keycloakConfig['auth-server-url'],
+          realmName: keycloakConfig['realm'],
+          clientId: keycloakConfig['resource'],
+          clientSecret: keycloakConfig['credentials']['secret'],
+        };
+      },
+    }),
   ],
   controllers: [AppController, UserController, RoomController],
-  providers: [AppService, WebsocketService],
+  providers: [AppService, WebsocketService, {provide: APP_GUARD, useClass: AuthGuard}],
 })
 export class AppModule {}
