@@ -1,4 +1,4 @@
-version: '3'
+version: "3.7"
 
 services:
 
@@ -6,27 +6,39 @@ services:
     image: quay.io/keycloak/keycloak:11.0.0
     container_name: esquenta-4-auth-app
     environment:
-      - KEYCLOAK_USER=admin
-      - KEYCLOAK_PASSWORD=admin
-      - DB_ADDR=db
-      - DB_VENDOR=mysql
-      - DB_DATABASE=auth
-      - DB_PORT=3306
-      - DB_USER=root
-      - DB_PASSWORD=root
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      DB_ADDR: db
+      DB_VENDOR: mysql
+      DB_DATABASE: auth
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: root
+      JDBC_PARAMS: 'useSSL=false'
     ports:
       - 8080:8080
+    depends_on: 
+      - db
+    networks: 
+      - esquenta-rede
 
   db:
     build: ./.docker/mysql
     container_name: esquenta-4-auth-db
     restart: always
     tty: true
+    command: [mysqld, --default_authentication_plugin=mysql_native_password, --character-set-server=utf8, --collation-server=utf8_bin, --default-storage-engine=INNODB]
     ports:
       - "33007:3306"
     volumes:
       - ./.docker/dbdata:/var/lib/mysql
     environment:
-      - MYSQL_DATABASE=auth
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_USER=root
+      MYSQL_DATABASE: auth
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: root
+    networks: 
+      - esquenta-rede
+
+networks: 
+  esquenta-rede:
+      driver: bridge
